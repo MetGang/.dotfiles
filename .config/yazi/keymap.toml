@@ -1,0 +1,24 @@
+[[input.prepend_keymap]]
+on = [ "<Esc>" ]
+run = "close"
+desc = "Cancel input"
+
+[[mgr.append_keymap]]
+on  = [ "<S-a>" ]
+run = "create --dir"
+desc = "Create directory"
+
+[[mgr.append_keymap]]
+on  = [ "<F2>" ]
+run = "rename"
+desc = "Alias for r"
+
+[[mgr.append_keymap]]
+on  = [ "g", "." ]
+run = "cd ~/.dotfiles"
+desc = "Go to ~/.dotfiles"
+
+[[mgr.append_keymap]]
+on  = [ "g", "s" ]
+run = "cd /srv"
+desc = "Go to /srv"

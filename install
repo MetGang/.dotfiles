@@ -1,0 +1,63 @@
+#!/bin/sh
+
+cmd_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+has_bash() {
+  cmd_exists "bash"
+}
+
+has_zsh() {
+  cmd_exists "zsh"
+}
+
+create_link() {
+  ln -fsr "$1" "$2" && echo "Created link for $1 in $2"
+}
+
+copy_file() {
+  cp "$1" "$2" && echo "Copied file from $1 to $2"
+}
+
+OLDPWD=$(pwd)
+cd "$(dirname "$0")" || exit 1
+
+if has_bash; then
+  create_link .bash_aliases ~
+  create_link .bash_logout ~
+  create_link .bash_profile ~
+  create_link .bashrc ~
+fi
+
+if cmd_exists "btop"; then
+  mkdir -p ~/.config/btop
+  copy_file .config/btop/btop.conf ~/.config/btop
+fi
+
+if cmd_exists "fzf"; then
+  if has_bash; then
+    create_link .fzf.bash ~
+  fi
+  if has_zsh; then
+    create_link .fzf.zsh ~
+  fi
+fi
+
+if cmd_exists "tmux"; then
+  create_link .tmux.conf ~
+fi
+
+if cmd_exists "vim"; then
+  create_link .vimrc ~
+fi
+
+if cmd_exists "yazi"; then
+  mkdir -p ~/.config/yazi
+  create_link .config/yazi/init.lua ~/.config/yazi
+  create_link .config/yazi/keymap.toml ~/.config/yazi
+  create_link .config/yazi/theme.toml ~/.config/yazi
+  create_link .config/yazi/yazi.toml ~/.config/yazi
+fi
+
+cd "$OLDPWD" || exit 1
