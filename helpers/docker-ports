@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ROOT="${1:-.}"
+
+find "$ROOT" -type f \( -name "docker-compose.yml" -o -name "docker-compose.yaml" \) 2>/dev/null | while read -r file; do
+  if docker compose -f "$file" config --format json >/dev/null 2>&1; then
+    docker compose -f "$file" config --format json | jq -r '
+      .services
+      | to_entries[]
+      | select(.value.ports)
+      | .key as $service
+      | ($service + "\n" +
+        (.value.ports
+        | map("  \(.published):\(.target)")
+        | join("\n")
+        )
+      )
+    '
+  fi
+done
